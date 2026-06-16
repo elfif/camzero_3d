@@ -1,0 +1,21 @@
+{
+  "name": "3d_backplate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "node build.js",
+    "watch": "node watch.js",
+    "export:stl": "npx @jscad/cli models/backplate.js -o models/backplate.stl"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@jscad/modeling": "^2.12.7"
+  },
+  "devDependencies": {
+    "@jscad/cli": "^2.3.7"
+  }
+}
