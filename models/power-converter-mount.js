@@ -8,7 +8,7 @@ const { screwMountM2_5 } = require("./screwery");
 const powerConverterLength = 12;
 const powerConverterWidth = 17;
 const radius = 2;
-const height = 8;
+const height = 5;
 const segments = 128;
 const deltaHeight = 2;
 
@@ -33,13 +33,6 @@ function powerConverterMount() {
       center: [0, 0, height],
     }),
   );
-
-  // return union(
-  //   translate([powerConverterLength / 2, powerConverterWidth / 2, 0], cylinder({radius: 1.5, height: 10, segments: 128})),
-  //   translate([-powerConverterLength / 2, powerConverterWidth / 2, 0], cylinder({radius: 1.5, height: 10, segments: 128})),
-  //   translate([powerConverterLength / 2, -powerConverterWidth / 2, 0], cylinder({radius: 1.5, height: 10, segments: 128})),
-  //   translate([-powerConverterLength / 2, -powerConverterWidth / 2, 0], cylinder({radius: 1.5, height: 10, segments: 128})),
-  // )
 }
 
 module.exports = { powerConverterMount };

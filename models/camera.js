@@ -1,27 +1,34 @@
 const {
-  primitives: { roundedCuboid, cylinder },
+  primitives: { roundedCuboid, cylinder, cuboid },
   booleans: { subtract, union },
   transforms: { translate, rotate },
 } = require("@jscad/modeling");
+
 const { ropeJoint } = require("./rope");
+
 const {
   cameraHole,
   cameraHole33mm,
   cameraHole31_6mm,
   cameraHole30mm,
 } = require("./camera-hole");
+
 const {
   screwMount1_4,
   screwMount1_4Body,
   screwMountHalfCircular,
   screwHoleHalfCircular,
+  screwHoleHalfCircularWithSupport,
+  screwMountHalfCircularWithSupport,
   screwMountM2_5,
 } = require("./screwery");
+
 const { cameraMount } = require("./camera-mount");
 const { raspberryZeroMount } = require("./raspberryzero-mount");
 const { powerConverterMount } = require("./power-converter-mount");
 const { bottleNeck, cap } = require("./screw-thread");
 const { cameraCap } = require("./camera-cap");
+
 const {
   innerLength,
   innerWidth,
@@ -58,7 +65,6 @@ module.exports.main = () => {
   function lowerBody() {
     const toRemove = roundedCuboid({
       size: [outerLength, outerWidth + 10, outerHeight],
-      // center: [(outerWidth / 2) * -1, 0, outerHeight / 2],
       center: [(centeredLength / 4) * -1, 0, outerHeight / 2],
       roundRadius: roundedRadius,
     });
@@ -76,7 +82,7 @@ module.exports.main = () => {
     // Camera sensor hole
     const cam = translate(
       [47, 0, 0],
-      rotate([0, Math.PI / 2, 0], cameraHole30mm()),
+      rotate([0, Math.PI / 2, 0], cameraHole31_6mm()),
     );
     body = subtract(body, cam);
 
@@ -88,7 +94,7 @@ module.exports.main = () => {
 
     // Gx12 bottom hole.
     const gx12BottomHole = translate(
-      [-5, 0, -outerHeight / 2],
+      [4, -12, -outerHeight / 2],
       cylinder({ radius: 6, height: 10, segments: 128 }),
     );
     body = subtract(body, gx12BottomHole);
@@ -100,26 +106,26 @@ module.exports.main = () => {
     );
     body = union(body, powerConverterMountPiece);
 
+    // Camera body 1/4 screw mount on the bottom
+    // First we need to substract the whole area then add the screw mount shape
+    const bottomScrewMountBody = translate(
+      [4, 10, -outerHeight / 2],
+      screwMount1_4Body(),
+    );
+    body = subtract(body, bottomScrewMountBody);
+
+    const bottomScrewMount = translate(
+      [4, 10, -outerHeight / 2],
+      screwMount1_4(),
+    );
+    body = union(body, bottomScrewMount);
+
     // Raspberry Pi 0 mount
     const raspberryPi0MountPiece = translate(
       [-12, -8, -innerHeight / 2],
       rotate([0, 0, 0], raspberryZeroMount()),
     );
     body = union(body, raspberryPi0MountPiece);
-
-    // Camera body 1/4 screw mount on the bottom
-    // First we need to substract the whole area then add the screw mount shape
-    const bottomScrewMountBody = translate(
-      [18, 0, -outerHeight / 2],
-      screwMount1_4Body(),
-    );
-    body = subtract(body, bottomScrewMountBody);
-
-    const bottomScrewMount = translate(
-      [18, 0, -outerHeight / 2],
-      screwMount1_4(),
-    );
-    body = union(body, bottomScrewMount);
 
     // Usb screw neck
     const neck = translate(
@@ -162,23 +168,23 @@ module.exports.main = () => {
     const caseScrewMounts = union(
       translate(
         [10, outerWidth / 2, 0],
-        rotate([Math.PI, 0, Math.PI / 2], screwHoleHalfCircular()),
+        rotate([Math.PI, 0, Math.PI / 2], screwHoleHalfCircularWithSupport()),
       ),
       translate(
         [10, -outerWidth / 2, 0],
-        rotate([Math.PI, 0, -Math.PI / 2], screwHoleHalfCircular()),
+        rotate([Math.PI, 0, -Math.PI / 2], screwHoleHalfCircularWithSupport()),
       ),
       translate(
         [-25, outerWidth / 2, 0],
-        rotate([Math.PI, 0, Math.PI / 2], screwHoleHalfCircular()),
+        rotate([Math.PI, 0, Math.PI / 2], screwHoleHalfCircularWithSupport()),
       ),
       translate(
         [-25, -outerWidth / 2, 0],
-        rotate([Math.PI, 0, -Math.PI / 2], screwHoleHalfCircular()),
+        rotate([Math.PI, 0, -Math.PI / 2], screwHoleHalfCircularWithSupport()),
       ),
       translate(
         [-outerLength / 2, 0, 0],
-        rotate([Math.PI, 0, -Math.PI], screwHoleHalfCircular()),
+        rotate([Math.PI, 0, -Math.PI], screwHoleHalfCircularWithSupport()),
       ),
     );
 
@@ -199,27 +205,31 @@ module.exports.main = () => {
     const caseScrewMounts = union(
       translate(
         [10, outerWidth / 2, 6],
-        rotate([Math.PI, 0, Math.PI / 2], screwMountHalfCircular()),
+        rotate([Math.PI, 0, Math.PI / 2], screwMountHalfCircularWithSupport()),
       ),
       translate(
         [10, -outerWidth / 2, 6],
-        rotate([Math.PI, 0, -Math.PI / 2], screwMountHalfCircular()),
+        rotate([Math.PI, 0, -Math.PI / 2], screwMountHalfCircularWithSupport()),
       ),
       translate(
         [-25, outerWidth / 2, 6],
-        rotate([Math.PI, 0, Math.PI / 2], screwMountHalfCircular()),
+        rotate([Math.PI, 0, Math.PI / 2], screwMountHalfCircularWithSupport()),
       ),
       translate(
         [-25, -outerWidth / 2, 6],
-        rotate([Math.PI, 0, -Math.PI / 2], screwMountHalfCircular()),
+        rotate([Math.PI, 0, -Math.PI / 2], screwMountHalfCircularWithSupport()),
       ),
       translate(
         [-outerLength / 2, 0, 6],
-        rotate([Math.PI, 0, -Math.PI], screwMountHalfCircular()),
+        rotate([Math.PI, 0, -Math.PI], screwMountHalfCircularWithSupport()),
       ),
     );
 
     // Now we need to add 2 M2.5 screw mounts  on each side to support the cap.
+    // We also need to provide 45° edge support for 3d printing convenience.
+    // In this case we need to add support on the top of the screw mounts.
+    // Because we will print that piece upside down.....
+
     const capScrewMounts = union(
       translate(
         [5, outerWidth / 2, outerHeight / 4],
@@ -249,24 +259,30 @@ module.exports.main = () => {
       clearance: 0.5,
     });
     return union(
-      translate([0, -innerWidth * 2,(outerHeight / 2) + 7], lowerBodyWithJoint()),
+      translate(
+        [0, -innerWidth * 2, outerHeight / 2 + 7],
+        lowerBodyWithJoint(),
+      ),
       translate(
         [0, innerWidth * 2, outerHeight / 2],
-        rotate(
-          [0, Math.PI, Math.PI],
-          upperBodyWithJoint(),
-        ),
+        rotate([0, Math.PI, Math.PI], upperBodyWithJoint()),
       ),
-      translate([50, 0, 9], rotate([Math.PI, 0,0], capPiece)),
-      translate([-50, 0, cameraCapHeight], 
+      translate([50, 0, 9], rotate([Math.PI, 0, 0], capPiece)),
+      translate(
+        [-50, 0, cameraCapHeight],
         rotate([0, Math.PI, Math.PI], cameraCap()),
       ),
     );
   }
 
-  return printable();
+  // return bottleNeck({
+  //   majorRadius: usbHoleScrewOuterRadius,
+  //   pitch: 2,
+  //   clearance: 0.5,
+  //   innerBoreRadius: usbHoleScrewInnerRadius,
+  // });
 
-  //return cameraCap();
+  // return cameraCap();
   // return upperBodyWithJoint();
   // return lowerBodyWithJoint();
   // return ropeJointAngle(0, 0, 0);
@@ -276,6 +292,7 @@ module.exports.main = () => {
   // return raspberryZeroMount();
   // return lowerBodyWithJoint();
   // return union(lowerBodyWithJoint(), upperBodyWithJoint());
-
+  // return upperBodyWithJoint();
   // return upperBodyWithCap();
+  return printable();
 };

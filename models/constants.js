@@ -32,7 +32,7 @@ const cameraCapTopLength = outerLength + capFrontOverflow;
 const cameraCapBottomLength = outerLength; 
 const cameraCapOuterWidth = outerWidth + 2 * (capDistanceToBody + capThickness);
 const cameraCapInnerWidth = cameraCapOuterWidth - 2 * capThickness;
-const cameraCapHeight = outerHeight / 2
+const cameraCapHeight = outerHeight / 2;
 
 module.exports = {
   innerLength,

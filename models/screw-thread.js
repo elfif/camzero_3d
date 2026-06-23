@@ -141,7 +141,10 @@ function gripRibsShape({
     ribs.push(
       translate(
         [x, y, capHeight / 2],
-        rotate([0, 0, angle], cuboid({ size: [ribDepth, ribWidth, ribHeight] })),
+        rotate(
+          [0, 0, angle],
+          cuboid({ size: [ribDepth, ribWidth, ribHeight] }),
+        ),
       ),
     );
   }
@@ -192,22 +195,33 @@ function bottleNeck(opts = {}) {
       segments: CYLINDER_SEGMENTS,
     }),
   );
+  
 
   // Overlap the helix into the flange so the profile root meets the core base.
+  // console.log(`minorRadius: ${minorRadius}, depth: ${depth}, pitch: ${pitch}, turns: ${turns}, flank: ${flank}, segmentsPerRotation: ${segmentsPerRotation}`);
+  // console.log(`threadOverlap: ${threadOverlap}`);
+  // console.log(`coreHeight: ${coreHeight}`);
+  // console.log(`flangeHeight: ${flangeHeight}`);
+  // console.log(`leadInHeight: ${leadInHeight}`);
+  // console.log(`flange: ${flange}`);
+  // console.log(`core: ${core}`);
+  // console.log(`thread: ${thread}`);
+  // console.log(`leadIn: ${leadIn}`);
+  // console.log(`neck: ${neck}`);
   const thread = translate(
-    [0, 0, flangeHeight - threadOverlap],
+    [0, 0, flangeHeight - threadOverlap * 3],
     helicalThread({
       minorRadius,
       depth,
       pitch,
-      turns,
+      turns: 6,
       flank,
       segmentsPerRotation,
     }),
   );
-
   let neck = union(flange, core, thread);
-
+  // let neck = union(flange, core);
+ 
   // Taper only the outer thread above the flange junction, not the flange face itself.
   const leadIn = translate(
     [0, 0, flangeHeight + leadInHeight / 2 + pitch * 0.25],
@@ -218,8 +232,7 @@ function bottleNeck(opts = {}) {
     }),
   );
 
-  neck = subtract(neck, leadIn);
-
+  // neck = subtract(neck, leadIn);
   if (innerBoreRadius > 0) {
     const boreHeight = flangeHeight + coreHeight + 0.1;
     const bore = translate(
@@ -233,6 +246,16 @@ function bottleNeck(opts = {}) {
     neck = subtract(neck, bore);
   }
 
+  // return neck;
+
+  // remove the excedent material on top and bottom of the neck
+  const top = cuboid({ size: [flangeRadius * 3, flangeRadius * 3, coreHeight], center: [0, 0, coreHeight + flangeHeight + 3 ] });
+  const bottom = cuboid({ size: [flangeRadius * 3, flangeRadius * 3, coreHeight], center: [0, 0, -coreHeight / 2] });
+
+  // return union(top, bottom);  
+  neck = subtract(neck, top);
+  neck = subtract(neck, bottom);
+  
   return neck;
 }
 

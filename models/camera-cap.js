@@ -23,7 +23,7 @@ const {
 
 function cameraCap() {
   let body = roundedCuboid({
-    size: [cameraCapTopLength, cameraCapOuterWidth, cameraCapHeight],
+    size: [cameraCapTopLength, cameraCapOuterWidth, cameraCapHeight - 3],
     center: [0, 0, cameraCapHeight / 2],
     roundRadius: roundedRadius,
   });
