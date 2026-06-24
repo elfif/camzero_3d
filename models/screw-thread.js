@@ -16,13 +16,13 @@ const DEFAULTS = {
   flank: 0.25,
   clearance: 0.4,
   segmentsPerRotation: 48,
-  flangeHeight: 2,
+  flangeHeight: 6,
   flangeRadius: 11,
   wall: 2,
   topThickness: 2,
   gripRibs: true,
   gripRibCount: 12,
-  innerBoreRadius: 5,
+  innerBoreRadius: 7,
 };
 
 const CYLINDER_SEGMENTS = 128;
@@ -83,17 +83,17 @@ function leadInChamfer({
   height,
   segments = CYLINDER_SEGMENTS,
 } = {}) {
-  const outer = cylinderElliptic({
-    startRadius: [majorRadius, majorRadius],
-    endRadius: [minorRadius, minorRadius],
-    height,
+  const inner = cylinderElliptic({
+    endRadius: [majorRadius, majorRadius],
+    startRadius: [minorRadius - 2, minorRadius - 2],
+    height: height + 0.2,
     segments,
   });
 
   // Only taper the thread annulus; do not cut into the core or flange top.
-  const inner = cylinder({
-    radius: minorRadius - 0.01,
-    height: height + 0.2,
+  const outer = cylinder({
+    radius: majorRadius + 0.01,
+    height: height,
     segments,
   });
 
@@ -130,20 +130,32 @@ function gripRibsShape({
   ribDepth = 0.8,
 } = {}) {
   const ribs = [];
-  const ribHeight = capHeight * 0.85;
+  const ribHeight = capHeight * 0.9;
 
   for (let i = 0; i < count; i++) {
     const angle = (i / count) * TAU;
-    const radialCenter = outerRadius + ribDepth / 2;
+    const radialCenter = outerRadius + ribDepth / 2.2;
     const x = Math.cos(angle) * radialCenter;
     const y = Math.sin(angle) * radialCenter;
 
+    // Each rib also has a 45° chamfer on the top and bottom.
+    // Better for grip and allow easier 3D printing.
+
     ribs.push(
       translate(
-        [x, y, capHeight / 2],
+        [x, y, capHeight / 2.1],
         rotate(
           [0, 0, angle],
-          cuboid({ size: [ribDepth, ribWidth, ribHeight] }),
+          subtract(
+            cuboid({ size: [ribDepth, ribWidth, ribHeight] }),
+            translate(
+              [0.7, 0, -ribHeight / 2],
+              rotate(
+                [0, Math.PI / 4, 0],
+                cuboid({ size: [ribDepth * 2, ribWidth, ribDepth * 2] }),
+              ),
+            ),
+          ),
         ),
       ),
     );
@@ -152,7 +164,7 @@ function gripRibsShape({
   return union(...ribs);
 }
 
-function bottleNeck(opts = {}) {
+function bottleCap(opts = {}) {
   const params = resolveParams(opts);
   const {
     minorRadius,
@@ -167,6 +179,8 @@ function bottleNeck(opts = {}) {
     flangeHeight,
     flangeRadius,
     innerBoreRadius,
+    outerRadius,
+    gripRibCount,
   } = params;
 
   if (innerBoreRadius > 0 && innerBoreRadius >= minorRadius) {
@@ -178,6 +192,10 @@ function bottleNeck(opts = {}) {
   const threadOverlap = pitch / 2;
   const coreHeight = leadInHeight + threadHeight;
 
+  console.log(
+    `innerBoreRadius: ${innerBoreRadius}, minorRadius: ${minorRadius}, majorRadius: ${majorRadius}, depth: ${depth}, pitch: ${pitch}, turns: ${turns}, flank: ${flank}, segmentsPerRotation: ${segmentsPerRotation}`,
+  );
+
   const flange = translate(
     [0, 0, flangeHeight / 2],
     cylinder({
@@ -188,55 +206,49 @@ function bottleNeck(opts = {}) {
   );
 
   const core = translate(
-    [0, 0, coreHeight / 2],
+    [0, 0, 2 + coreHeight / 2],
     cylinder({
       radius: minorRadius,
       height: coreHeight,
       segments: CYLINDER_SEGMENTS,
     }),
   );
-  
 
   // Overlap the helix into the flange so the profile root meets the core base.
-  // console.log(`minorRadius: ${minorRadius}, depth: ${depth}, pitch: ${pitch}, turns: ${turns}, flank: ${flank}, segmentsPerRotation: ${segmentsPerRotation}`);
-  // console.log(`threadOverlap: ${threadOverlap}`);
-  // console.log(`coreHeight: ${coreHeight}`);
-  // console.log(`flangeHeight: ${flangeHeight}`);
-  // console.log(`leadInHeight: ${leadInHeight}`);
-  // console.log(`flange: ${flange}`);
-  // console.log(`core: ${core}`);
-  // console.log(`thread: ${thread}`);
-  // console.log(`leadIn: ${leadIn}`);
-  // console.log(`neck: ${neck}`);
   const thread = translate(
-    [0, 0, flangeHeight - threadOverlap * 3],
+    [0, 0, flangeHeight - threadOverlap],
     helicalThread({
       minorRadius,
       depth,
       pitch,
-      turns: 6,
+      turns,
       flank,
       segmentsPerRotation,
     }),
   );
+
   let neck = union(flange, core, thread);
   // let neck = union(flange, core);
- 
-  // Taper only the outer thread above the flange junction, not the flange face itself.
-  const leadIn = translate(
-    [0, 0, flangeHeight + leadInHeight / 2 + pitch * 0.25],
-    leadInChamfer({
-      majorRadius,
-      minorRadius,
-      height: leadInHeight,
-    }),
-  );
 
-  // neck = subtract(neck, leadIn);
+  // Add a lead in chamfer to the neck to make it easier to insert the screw.
+  const leadIn = translate(
+    //[0, 0, flangeHeight + coreHeight + leadInHeight / 2],
+    [0, 0, coreHeight + 2],
+    rotate(
+      [0, Math.PI, 0],
+      leadInChamfer({
+        majorRadius,
+        minorRadius,
+        height: leadInHeight,
+      }),
+    ),
+  );
+  neck = subtract(neck, leadIn);
+
   if (innerBoreRadius > 0) {
     const boreHeight = flangeHeight + coreHeight + 0.1;
     const bore = translate(
-      [0, 0, boreHeight / 2],
+      [0, 0, 2 + boreHeight / 2],
       cylinder({
         radius: innerBoreRadius,
         height: boreHeight,
@@ -246,20 +258,54 @@ function bottleNeck(opts = {}) {
     neck = subtract(neck, bore);
   }
 
-  // return neck;
-
   // remove the excedent material on top and bottom of the neck
-  const top = cuboid({ size: [flangeRadius * 3, flangeRadius * 3, coreHeight], center: [0, 0, coreHeight + flangeHeight + 3 ] });
-  const bottom = cuboid({ size: [flangeRadius * 3, flangeRadius * 3, coreHeight], center: [0, 0, -coreHeight / 2] });
+  const top = cuboid({
+    size: [flangeRadius * 3, flangeRadius * 3, coreHeight],
+    center: [0, 0, coreHeight + flangeHeight + 2],
+  });
+  const bottom = cuboid({
+    size: [flangeRadius * 3, flangeRadius * 3, coreHeight],
+    center: [0, 0, -coreHeight / 2],
+  }); 
 
-  // return union(top, bottom);  
+  //return union(top, bottom, neck);
   neck = subtract(neck, top);
   neck = subtract(neck, bottom);
-  
+
+  const grips = gripRibsShape({
+    outerRadius: flangeRadius,
+    capHeight: flangeHeight,
+    count: gripRibCount,
+  });
+  neck = union(neck, grips);
+
   return neck;
 }
 
-function cap(opts = {}) {
+function innerScrewCylinder(opts = {}) {
+  const params = resolveParams(opts);
+  const { threadHeight, outerRadius, topThickness } = params;
+
+  const capHeight = threadHeight + topThickness;
+
+  const outer = translate(
+    [0, 0, capHeight / 2],
+    cylinder({
+      radius: outerRadius,
+      height: capHeight,
+      segments: CYLINDER_SEGMENTS,
+    }),
+  );
+  return outer;
+}
+
+function innerCylinderHeight(opts = {}) {
+  const params = resolveParams(opts);
+  const { threadHeight, topThickness } = params;
+  return threadHeight + topThickness;
+}
+
+function innerScrew(opts = {}) {
   const params = resolveParams(opts);
   const {
     minorRadius,
@@ -342,20 +388,23 @@ function cap(opts = {}) {
   return shell;
 }
 
-function main() {
+function fullPiece() {
   const params = DEFAULTS;
-  const neck = bottleNeck(params);
-  const capPiece = cap(params);
+  //params.depth = 2;
+  const cap = bottleCap(params);
+  const neck = innerScrew(params);
   const spacing = (params.majorRadius + params.clearance + params.wall) * 2 + 8;
 
-  return union(neck, translate([spacing, 0, 0], capPiece));
+  return union(cap, translate([spacing, 0, 0], neck));
 }
 
 module.exports = {
   DEFAULTS,
   threadProfile,
   helicalThread,
-  bottleNeck,
-  cap,
-  main,
+  bottleCap,
+  fullPiece,
+  innerScrewCylinder,
+  innerCylinderHeight,
+  innerScrew,
 };

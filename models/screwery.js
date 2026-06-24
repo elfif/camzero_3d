@@ -139,7 +139,7 @@ function screwHoleHalfCircularWithSupport({
     radius: headRadius,
     height: totalHoleHeight - holeHeight,
     segments: 128,
-    center: [headRadius, 0, (headHeight + totalHoleHeight) / 2],
+    center: [headRadius, 0, 1+ (headHeight + totalHoleHeight) / 2],
   });
   const holeCylinder = cylinder({
     radius: holeRadius,

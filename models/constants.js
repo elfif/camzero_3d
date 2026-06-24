@@ -2,11 +2,11 @@
 // We consider xyz as lwh, length width height
 
 const innerLength = 90;
-const innerWidth = 45;
+const innerWidth = 54;
 const innerHeight = 45;
 
 const wallThickness = 4;
-const roundedRadius = 2.5;
+const roundedRadius = 5;
 
 const cameraMountHoleSpacing = 27;
 
@@ -34,6 +34,11 @@ const cameraCapOuterWidth = outerWidth + 2 * (capDistanceToBody + capThickness);
 const cameraCapInnerWidth = cameraCapOuterWidth - 2 * capThickness;
 const cameraCapHeight = outerHeight / 2;
 
+const usbPortLength = 17.6;
+const usbPortWidth = 9;
+const usbEnclosureHeight = 6;
+const usbEnclosureInnerRadius = 12;
+
 module.exports = {
   innerLength,
   innerWidth,
@@ -58,4 +63,8 @@ module.exports = {
   cameraCapInnerWidth,
   capThickness,
   capDistanceToBody,
+  usbPortLength,
+  usbPortWidth,
+  usbEnclosureHeight,
+  usbEnclosureInnerRadius,
 };

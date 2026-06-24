@@ -6,18 +6,11 @@ const {
 
 const { ropeJoint } = require("./rope");
 
-const {
-  cameraHole,
-  cameraHole33mm,
-  cameraHole31_6mm,
-  cameraHole30mm,
-} = require("./camera-hole");
+const { cameraHole31_6mm } = require("./camera-hole");
 
 const {
   screwMount1_4,
   screwMount1_4Body,
-  screwMountHalfCircular,
-  screwHoleHalfCircular,
   screwHoleHalfCircularWithSupport,
   screwMountHalfCircularWithSupport,
   screwMountM2_5,
@@ -26,7 +19,7 @@ const {
 const { cameraMount } = require("./camera-mount");
 const { raspberryZeroMount } = require("./raspberryzero-mount");
 const { powerConverterMount } = require("./power-converter-mount");
-const { bottleNeck, cap } = require("./screw-thread");
+const { innerScrewCylinder, innerCylinderHeight, innerScrew, fullPiece, bottleCap } = require("./screw-thread");
 const { cameraCap } = require("./camera-cap");
 
 const {
@@ -66,7 +59,7 @@ module.exports.main = () => {
     const toRemove = roundedCuboid({
       size: [outerLength, outerWidth + 10, outerHeight],
       center: [(centeredLength / 4) * -1, 0, outerHeight / 2],
-      roundRadius: roundedRadius,
+      roundRadius: 2.5,
     });
 
     return subtract(fullBody(), toRemove);
@@ -94,14 +87,14 @@ module.exports.main = () => {
 
     // Gx12 bottom hole.
     const gx12BottomHole = translate(
-      [4, -12, -outerHeight / 2],
+      [-12, 14, -outerHeight / 2],
       cylinder({ radius: 6, height: 10, segments: 128 }),
     );
     body = subtract(body, gx12BottomHole);
 
     // Power converter mount
     const powerConverterMountPiece = translate(
-      [-15, 14, -innerHeight / 2],
+      [-28, 14, -innerHeight / 2],
       rotate([0, 0, Math.PI / 2], powerConverterMount()),
     );
     body = union(body, powerConverterMountPiece);
@@ -109,61 +102,68 @@ module.exports.main = () => {
     // Camera body 1/4 screw mount on the bottom
     // First we need to substract the whole area then add the screw mount shape
     const bottomScrewMountBody = translate(
-      [4, 10, -outerHeight / 2],
+      [9, 0, -outerHeight / 2],
       screwMount1_4Body(),
     );
     body = subtract(body, bottomScrewMountBody);
 
     const bottomScrewMount = translate(
-      [4, 10, -outerHeight / 2],
+      [9, 0, -outerHeight / 2],
       screwMount1_4(),
     );
     body = union(body, bottomScrewMount);
 
     // Raspberry Pi 0 mount
     const raspberryPi0MountPiece = translate(
-      [-12, -8, -innerHeight / 2],
+      [-10, 11, -innerHeight / 2],
       rotate([0, 0, 0], raspberryZeroMount()),
     );
     body = union(body, raspberryPi0MountPiece);
 
-    // Usb screw neck
-    const neck = translate(
-      [usbHoleRelativeX, 0, -centeredHeight / 2],
-      rotate(
-        [Math.PI, 0, 0],
-        bottleNeck({
-          majorRadius: usbHoleScrewOuterRadius,
-          pitch: 2,
-          clearance: 0.5,
-          innerBoreRadius: usbHoleScrewInnerRadius,
-        }),
-      ),
+    // // Usb screw neck
+    // const neck = translate(
+    //   [usbHoleRelativeX, 0, -centeredHeight / 2],
+    //   rotate(
+    //     [Math.PI, 0, 0],
+    //     bottleNeck({
+    //       majorRadius: usbHoleScrewOuterRadius,
+    //       pitch: 2,
+    //       clearance: 0.5,
+    //       innerBoreRadius: usbHoleScrewInnerRadius,
+    //     }),
+    //   ),
+    // );
+
+    const innerCylinder = innerScrewCylinder({majorRadius: usbHoleScrewOuterRadius,});
+
+    body = subtract(
+      body,
+      translate([usbHoleRelativeX, -12, -outerHeight / 2], innerCylinder),
+    );
+
+    const innerScrewThreadHole = innerScrew({
+      gripRibs: false,
+      gripRibCount: 0,
+      majorRadius: usbHoleScrewOuterRadius,
+    });
+
+    body = union(
+      body,
+      translate([usbHoleRelativeX, -12, -outerHeight / 2], innerScrewThreadHole),
     );
 
     // Usb hole 17.6 by 9
     const usbHole = translate(
-      [usbHoleRelativeX, 0, -centeredHeight / 2],
+      [usbHoleRelativeX, -12, -outerHeight / 2 + innerCylinderHeight()],
       rotate(
-        [0, 0, Math.PI / 2],
+        [0, 0, 0],
         roundedCuboid({
           size: [17.6, 9, 6],
           roundRadius: 1,
         }),
       ),
     );
-
-    // Case screw threads hole, using M3 * 6mm
-    // on the x axis 2 screws per side, one in the middle, one at 3/4
-    // on the y axis, one in the middle.
-
-    // const caseScrewThreadsHoleBody = translate([0, outerWidth / 2 + 1.5, -6], screwMountM3Body());
-    // body = subtract(body, caseScrewThreadsHoleBody);
-
-    // const caseScrewThreadsHole = translate([0, outerWidth / 2 + 1.5, -6], screwMountM3());
-    // body = union(body, caseScrewThreadsHole);
-
-    body = subtract(union(body, neck), usbHole);
+    body = subtract(body, usbHole);
 
     const caseScrewMounts = union(
       translate(
@@ -253,38 +253,35 @@ module.exports.main = () => {
   }
 
   function printable() {
-    const capPiece = cap({
-      majorRadius: usbHoleScrewOuterRadius,
-      pitch: 2,
-      clearance: 0.5,
-    });
+    const capPiece = bottleCap();
     return union(
       translate(
-        [0, -innerWidth * 2, outerHeight / 2 + 7],
+        [0, -innerWidth * 2, outerHeight / 2],
         lowerBodyWithJoint(),
       ),
       translate(
         [0, innerWidth * 2, outerHeight / 2],
         rotate([0, Math.PI, Math.PI], upperBodyWithJoint()),
       ),
-      translate([50, 0, 9], rotate([Math.PI, 0, 0], capPiece)),
+      translate([50, 0, 0], rotate([0 , 0, 0], capPiece)),
       translate(
-        [-50, 0, cameraCapHeight],
+        [-50, 0, cameraCapHeight-1],
         rotate([0, Math.PI, Math.PI], cameraCap()),
       ),
     );
   }
 
-  // return bottleNeck({
+  // return bottleCap({
   //   majorRadius: usbHoleScrewOuterRadius,
   //   pitch: 2,
   //   clearance: 0.5,
   //   innerBoreRadius: usbHoleScrewInnerRadius,
   // });
 
+  // return rotate([0, Math.PI / 2, 0], fullPiece());
   // return cameraCap();
   // return upperBodyWithJoint();
-  // return lowerBodyWithJoint();
+  // return translate([0, 0, outerHeight / 2], lowerBodyWithJoint());
   // return ropeJointAngle(0, 0, 0);
   // return ropeJoint();
   // return cameraHole();
