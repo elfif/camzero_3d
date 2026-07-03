@@ -54,11 +54,13 @@ module.exports.main = () => {
     const outerCuboid = roundedCuboid({
       size: [outerLength, outerWidth, outerHeight],
       roundRadius: roundedRadius,
+      segments: 128
     });
 
     const innerCuboid = roundedCuboid({
       size: [innerLength, innerWidth, innerHeight],
       roundRadius: roundedRadius,
+      segments: 128
     });
 
     return subtract(outerCuboid, innerCuboid);
@@ -69,6 +71,7 @@ module.exports.main = () => {
       size: [outerLength, outerWidth + 10, outerHeight],
       center: [(centeredLength / 4) * -1, 0, outerHeight / 2],
       roundRadius: 2.5,
+      segments: 128
     });
 
     return subtract(fullBody(), toRemove);
@@ -336,7 +339,7 @@ module.exports.main = () => {
   // return screwMount1_4();
   // return raspberryZeroMount();
   // return lowerBodyWithJoint();
-  // return union(lowerBodyWithJoint(), upperBodyWithJoint());
+  return union(lowerBodyWithJoint(), upperBodyWithJoint());
   // return upperBodyWithJoint();
   // return upperBodyWithCap();
   return printable();

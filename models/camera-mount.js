@@ -95,11 +95,6 @@ function cameraMount({ innerLength, totalHeight = 18 } = {}) {
     ),
   );
 
-  body = subtract(body, cuboid({
-    size: [totalHeight - 2, cameraMountHoleSpacing - 6, 8],
-    center: [3 + totalHeight + innerLength / 2, 0, -cameraMountHoleSpacing / 2 ],
-  }));
-
   return body;
 }
 
