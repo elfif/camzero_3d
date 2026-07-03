@@ -249,7 +249,7 @@ function screwMountHalfCircularBody({
 
 function screwMountM2(additionalHeight) {
   return screwMount({
-    radius: 1.5,
+    radius: 1.6,
     height: 3,
     thickness: 2,
     additionalHeight: additionalHeight ?? 1,
@@ -258,7 +258,7 @@ function screwMountM2(additionalHeight) {
 
 function screwMountM2_5({ additionalHeight, thickness } = {}) {
   return screwMount({
-    radius: 1.7,
+    radius: 1.8,
     height: 4,
     thickness: thickness ?? 2,
     additionalHeight: additionalHeight ?? 1,
@@ -287,7 +287,7 @@ function screwMount1_4(additionalHeight) {
   additionalHeight = additionalHeight ?? 1;
   const holeDepth = 12.7;
   const piece = screwMount({
-    radius: 6.1,
+    radius: 3.1,
     height: holeDepth,
     thickness: 6,
     additionalHeight: additionalHeight,
@@ -301,7 +301,7 @@ function screwMount1_4(additionalHeight) {
 
 const screwMount1_4Body = (additionalHeight) => {
   return screwMountBody({
-    radius: 6.1,
+    radius: 3.1,
     height: 12.7,
     additionalHeight: additionalHeight,
     thickness: 6,
