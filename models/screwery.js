@@ -128,7 +128,7 @@ function screwHoleHalfCircular({
 function screwHoleHalfCircularWithSupport({
   bodyRadius = 2.5,
   holeHeight = 2,
-  holeRadius = 1.6,
+  holeRadius = 1.9,
   headHeight = 2,
   headRadius = 3,
   thickness = 1,
@@ -286,7 +286,7 @@ function screwMount1_4(additionalHeight) {
   additionalHeight = additionalHeight ?? 1;
   const holeDepth = 12.7;
   const piece = screwMount({
-    radius: 3.1,
+    radius: 3.6,
     height: holeDepth,
     thickness: 6,
     additionalHeight: additionalHeight,

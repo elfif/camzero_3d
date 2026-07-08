@@ -107,7 +107,7 @@ module.exports.main = () => {
     // Gx12 hex hole for nut
     const gx12HexHole = translate(
       [-12, 14, -1 - innerHeight / 2],
-      Hexagon(15, 1),
+      Hexagon(16, 1),
     );
     body = subtract(body, gx12HexHole);
 
@@ -261,19 +261,19 @@ module.exports.main = () => {
 
     const capScrewMounts = union(
       translate(
-        [5, outerWidth / 2, outerHeight / 4],
+        [15, outerWidth / 2, outerHeight / 4],
         rotate([Math.PI / 2, 0, Math.PI], screwMountM2_5()),
       ),
       translate(
-        [-25, outerWidth / 2, outerHeight / 4],
+        [-15, outerWidth / 2, outerHeight / 4],
         rotate([Math.PI / 2, 0, Math.PI], screwMountM2_5()),
       ),
       translate(
-        [5, -(outerWidth / 2), outerHeight / 4],
+        [15, -(outerWidth / 2), outerHeight / 4],
         rotate([Math.PI / 2, 0, 0], screwMountM2_5()),
       ),
       translate(
-        [-25, -(outerWidth / 2), outerHeight / 4],
+        [-15, -(outerWidth / 2), outerHeight / 4],
         rotate([Math.PI / 2, 0, 0], screwMountM2_5()),
       ),
     );

@@ -34,7 +34,7 @@ const cameraCapOuterWidth = outerWidth + 2 * (capDistanceToBody + capThickness);
 const cameraCapInnerWidth = cameraCapOuterWidth - 2 * capThickness;
 const cameraCapHeight = outerHeight / 2;
 
-const usbPortLength = 19;
+const usbPortLength = 19.5;
 const usbPortWidth = 10;
 const usbEnclosureHeight = 6;
 const usbEnclosureInnerRadius = 12;
