@@ -220,8 +220,12 @@ module.exports.main = () => {
         rotate([Math.PI, 0, -Math.PI], screwHoleHalfCircularWithSupport()),
       ),
       translate(
-        [outerLength / 2 - (centeredLength - upperBodyCenteredLength), 0, outerHeight / 2],
-        rotate([0, -Math.PI / 2, Math.PI], screwHoleHalfCircularWithSupport()),
+        [outerLength / 2 - (centeredLength - upperBodyCenteredLength), -outerWidth / 2, (outerHeight - lowerBodyOuterHeight()) / 3],
+        rotate([-Math.PI / 2, 0, -Math.PI / 2 ], screwHoleHalfCircularWithSupport()),
+      ),
+      translate(
+        [outerLength / 2 - (centeredLength - upperBodyCenteredLength), outerWidth / 2, (outerHeight - lowerBodyOuterHeight()) / 3],
+        rotate([Math.PI / 2, 0, Math.PI / 2 ], screwHoleHalfCircularWithSupport()),
       ),
     );
 
@@ -231,7 +235,7 @@ module.exports.main = () => {
   function upperBodyWithCap() {
     return union(
       upperBody(),
-      translate([0, 0, capDistanceToBody + capThickness], cameraCap()),
+      translate([10, 0, 3], cameraCap()),
     );
   }
 
@@ -264,8 +268,12 @@ module.exports.main = () => {
         rotate([Math.PI, 0, -Math.PI], screwMountHalfCircularWithSupport()),
       ),
       translate(
-        [outerLength / 2 -(outerLength - upperBodyOuterLength) - 4, 0, outerHeight / 2],
-        rotate([0, -Math.PI / 2, Math.PI], screwMountHalfCircularWithSupport()),
+        [outerLength / 2 - (centeredLength - upperBodyCenteredLength) - 6.1, -outerWidth / 2, (outerHeight - lowerBodyOuterHeight()) / 3],
+        rotate([-Math.PI / 2, 0, -Math.PI / 2 ], screwMountHalfCircularWithSupport()),
+      ),
+      translate(
+        [outerLength / 2 - (centeredLength - upperBodyCenteredLength) - 6.1, outerWidth / 2, (outerHeight - lowerBodyOuterHeight()) / 3],
+        rotate([Math.PI / 2, 0, Math.PI / 2 ], screwMountHalfCircularWithSupport()),
       ),
     );
 
@@ -277,19 +285,19 @@ module.exports.main = () => {
     const capScrewMounts = union(
       translate(
         [15, outerWidth / 2, outerHeight / 4],
-        rotate([Math.PI / 2, 0, Math.PI], screwMountM2_5()),
+        rotate([Math.PI / 2, 0, Math.PI], screwMountM2_5({ additionalHeight: 5 })),
       ),
       translate(
         [-15, outerWidth / 2, outerHeight / 4],
-        rotate([Math.PI / 2, 0, Math.PI], screwMountM2_5()),
+        rotate([Math.PI / 2, 0, Math.PI], screwMountM2_5({ additionalHeight: 5 })),
       ),
       translate(
         [15, -(outerWidth / 2), outerHeight / 4],
-        rotate([Math.PI / 2, 0, 0], screwMountM2_5()),
+        rotate([Math.PI / 2, 0, 0], screwMountM2_5({ additionalHeight: 5 })),
       ),
       translate(
         [-15, -(outerWidth / 2), outerHeight / 4],
-        rotate([Math.PI / 2, 0, 0], screwMountM2_5()),
+        rotate([Math.PI / 2, 0, 0], screwMountM2_5({ additionalHeight: 5 })),
       ),
     );
 
@@ -359,6 +367,6 @@ module.exports.main = () => {
   // return translate([0, 0, 20], lowerBodyWithJoint());
   // return union(lowerBodyWithJoint(), upperBody());
   // return upperBody();
-  return upperBodyWithCap();
+  // return upperBodyWithCap();
   return printable();
 };

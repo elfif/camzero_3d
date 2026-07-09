@@ -39,7 +39,7 @@ const centeredHeight = (outerHeight + innerHeight) / 2;
 
 const ropeDimensions = { centeredLength, centeredWidth, centeredHeight };
 
-const capDistanceToBody = 5
+const capDistanceToBody = 9
 const capThickness = 3;
 const capFrontOverflow = 10
 

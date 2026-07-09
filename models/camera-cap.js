@@ -49,10 +49,10 @@ function cameraCap() {
 
   // Add 4 M2.5 screw holes on the bottom side to support the cap.
   const capScrewMounts = union(
-    translate([2.5, capDistanceToBody + outerWidth / 2, outerHeight / 4 - capDistanceToBody - capThickness], rotate([-Math.PI / 2, 0, 0], screwHole())),
-    translate([-27.5, capDistanceToBody + outerWidth / 2, outerHeight / 4 - capDistanceToBody - capThickness], rotate([-Math.PI / 2, 0, 0], screwHole())),
-    translate([2.5, - (outerWidth / 2) - capDistanceToBody, outerHeight / 4 - capThickness - capDistanceToBody],  rotate([Math.PI / 2, 0, 0], screwHole())),
-    translate([-27.5, - (outerWidth / 2) - capDistanceToBody, outerHeight / 4 - capThickness - capDistanceToBody], rotate([Math.PI / 2, 0, 0], screwHole())),
+    translate([2.5, capDistanceToBody + outerWidth / 2, outerHeight / 4 - capThickness], rotate([-Math.PI / 2, 0, 0], screwHole())),
+    translate([-27.5, capDistanceToBody + outerWidth / 2, outerHeight / 4 - capThickness], rotate([-Math.PI / 2, 0, 0], screwHole())),
+    translate([2.5, - (outerWidth / 2) - capDistanceToBody, outerHeight / 4 - capThickness],  rotate([Math.PI / 2, 0, 0], screwHole())),
+    translate([-27.5, - (outerWidth / 2) - capDistanceToBody, outerHeight / 4 - capThickness], rotate([Math.PI / 2, 0, 0], screwHole())),
   );
 
   // return capScrewMounts;
