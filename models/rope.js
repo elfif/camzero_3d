@@ -77,23 +77,15 @@ function ropeJointAngle(
 
 function ropeJoint() {
 
-  const smallAngleXY = ropeJointAngle(0, 0, 0, 4.5, 0.5);
-  const smallAngleYZ = ropeJointAngle(0, Math.PI / 2, 0, 4.5, 0.5);
+  const smallAngleXY = ropeJointAngle(0, 0, 0, 7.5, 0.5);
+  const smallAngleYZ = ropeJointAngle(0, Math.PI / 2, 0, 7.5, 0.5);
   const largeAngleXZ = ropeJointAngle(-Math.PI / 2, 0, 0, largeRoundedRadius - jointRadius, jointRadius);
   
-  const smallAngleXYDimensions = getSizes(ropeJointAngle(0, 0, 0, 4.5, 0.5));
-  const smallAngleYZDimensions = getSizes(ropeJointAngle(0, Math.PI / 2, 0, 4.5, 0.5));
-  const largeAngleXZDimensions = getSizes(
-    ropeJointAngle(
-      -Math.PI / 2,
-      0,
-      0,
-      largeRoundedRadius - jointRadius,
-      jointRadius,
-    ),
-  );
+  const smallAngleXYDimensions = getSizes(smallAngleXY);
+  const smallAngleYZDimensions = getSizes(smallAngleYZ);
+  const largeAngleXZDimensions = getSizes(largeAngleXZ);
  
-  const xSegmentLength = upperBodyOuterLength + 2 * jointRadius;
+  const xSegmentLength = upperBodyOuterLength + 1;
   const xSegmentLengthMinusAngles =
     xSegmentLength - smallAngleXYDimensions.x - largeAngleXZDimensions.x;
   const ySegmentLengthMinusAngles =
@@ -104,7 +96,7 @@ function ropeJoint() {
 
   return translate(
       // [0.2, 9.5, -0.2],
-      [-largeAngleXZDimensions.x, 0, lowerBodyOuterHeight() - outerHeight / 2],
+      [-largeAngleXZDimensions.x + 1.7, 0, - 0.2 + lowerBodyOuterHeight() - outerHeight / 2],
       union(
         translate(
           [0, centeredWidth / 2, 0],

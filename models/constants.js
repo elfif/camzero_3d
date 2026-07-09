@@ -10,7 +10,7 @@ const segments = Math.max(8, Number(process.env.SEG) || 32);
 const threadSegmentsPerRotation = Math.max(8, Math.round((segments * 48) / 128));
 
 const wallThickness = 4;
-const roundedRadius = 5;
+const roundedRadius = 8;
 const largeRoundedRadius = 10;
 
 const innerLength = 100;
