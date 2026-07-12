@@ -94,8 +94,8 @@ module.exports.main = () => {
     // return body;
 
     // Gx12 bottom hole.
-    const Gx12XOffset = -8;
-    const Gx12YOffset = -18;
+    const Gx12XOffset = 6;
+    const Gx12YOffset = -10;
     const gx12BottomHole = translate(
       [Gx12XOffset, Gx12YOffset, -outerHeight / 2],
       cylinder({ radius: 6, height: 10, segments }),
@@ -108,41 +108,43 @@ module.exports.main = () => {
     body = subtract(body, gx12BottomHole, gx12HexHole);
 
     // Power converter mount
-    const powerConverterMountPiece = translate(
-      [8, -20, -innerHeight / 2],
-      rotate([0, 0, Math.PI / 2], powerConverterMount()),
-    );
-    body = union(body, powerConverterMountPiece);
+    // const powerConverterMountPiece = translate(
+    //   [8, -20, -innerHeight / 2],
+    //   rotate([0, 0, Math.PI / 2], powerConverterMount()),
+    // );
+    // body = union(body, powerConverterMountPiece);
 
     // Camera body 1/4 screw mount on the bottom
     // First we need to substract the whole area then add the screw mount shape
     const bottomScrewMountBody = translate(
-      [4, 0, -outerHeight / 2],
+      [10, 10, -outerHeight / 2],
       screwMount1_4Body(),
     );
     body = subtract(body, bottomScrewMountBody);
 
     const bottomScrewMount = translate(
-      [4, 0, -outerHeight / 2],
+      [10, 10, -outerHeight / 2],
       screwMount1_4(),
     );
     body = union(body, bottomScrewMount);
 
     // Raspberry Pi 0 mount
     const raspberryPi0MountPiece = translate(
-      [-16, 11, -innerHeight / 2],
+      [-10, 6, -innerHeight / 2],
       rotate([0, 0, 0], raspberryZeroMount()),
     );
     body = union(body, raspberryPi0MountPiece);
 
     // Usb hole with screw thread
     // Main cylinder subtract
+    const usbHoleXOffset = -22;
+    const usbHoleYOffset = -10;
     const innerCylinder = innerScrewCylinder({
       majorRadius: usbHoleScrewOuterRadius,
     });
     body = subtract(
       body,
-      translate([usbHoleRelativeX, -12, -outerHeight / 2], innerCylinder),
+      translate([usbHoleXOffset, usbHoleYOffset, -outerHeight / 2], innerCylinder),
     );
 
     // Inner screw thread
@@ -155,7 +157,7 @@ module.exports.main = () => {
     body = union(
       body,
       translate(
-        [usbHoleRelativeX, -12, -outerHeight / 2],
+        [usbHoleXOffset, usbHoleYOffset, -outerHeight / 2],
         innerScrewThreadHole,
       ),
     );
@@ -163,7 +165,7 @@ module.exports.main = () => {
     console.log(usbHoleScrewInnerRadius);
     // subtract torus shape for 1mm joint at the bottom.
     const torusShape = translate(
-      [usbHoleRelativeX, -12, 10 - outerHeight / 2],
+      [usbHoleXOffset, usbHoleYOffset, 10 - outerHeight / 2],
       torus({
         innerRadius: 0.5,
         outerRadius: usbHoleScrewInnerRadius + 0.5,
@@ -177,7 +179,7 @@ module.exports.main = () => {
 
     // Usb hole 17.6 by 9
     const usbHole = translate(
-      [usbHoleRelativeX, -12, -outerHeight / 2 + innerCylinderHeight()],
+      [usbHoleXOffset, usbHoleYOffset, -outerHeight / 2 + innerCylinderHeight()],
       rotate(
         [0, 0, 0],
         roundedCuboid({
@@ -340,14 +342,14 @@ module.exports.main = () => {
 
     return subtract(
       union(
-        translate([0, 0, 6], rotate([0, 0, 0], inner)),
+        translate([0, 0, 14], rotate([0, 0, 0], inner)),
         translate([0, 0, 0], outer),
       ),
       cuboid({ size: [100, 100, 100], center: [0, 50, 0] }),
     );
   }
 
-  // return thread2Parts();
+  return thread2Parts();
 
   // return bottleCap({
   //   majorRadius: usbHoleScrewOuterRadius,
@@ -367,8 +369,8 @@ module.exports.main = () => {
   // return screwMount1_4();
   // return raspberryZeroMount();
   // return translate([0, 0, 20], lowerBodyWithJoint());
-  // return union(lowerBodyWithJoint(), upperBody());
   // return upperBody();
+  // return union(lowerBodyWithJoint(), upperBody());
   // return upperBodyWithCap();
   return printable();
 };

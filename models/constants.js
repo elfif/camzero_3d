@@ -13,11 +13,11 @@ const wallThickness = 4;
 const roundedRadius = 8;
 const largeRoundedRadius = 10;
 
-const innerLength = 100;
-const innerWidth = 54;
-const innerHeight = 45;
+const innerLength = 90;
+const innerWidth = 45;
+const innerHeight = 40;
 
-const upperBodyInnerLength = 85;
+const upperBodyInnerLength = 75;
 const upperBodyOuterLength = upperBodyInnerLength + wallThickness;
 const upperBodyCenteredLength = (upperBodyOuterLength + upperBodyInnerLength) / 2;
 
@@ -25,7 +25,6 @@ const upperToLowerHeightRatio = 0.4
 
 const cameraMountHoleSpacing = 27;
 
-const usbHoleRelativeX = -32;
 const usbHoleScrewOuterRadius = 13.5;
 const usbHoleScrewInnerRadius = 12.5;
 
@@ -64,7 +63,6 @@ module.exports = {
   roundedRadius,
   largeRoundedRadius,
   cameraMountHoleSpacing,
-  usbHoleRelativeX,
   usbHoleScrewOuterRadius,
   usbHoleScrewInnerRadius,
   outerLength,
