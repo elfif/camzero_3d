@@ -337,19 +337,19 @@ module.exports.main = () => {
 
     const capScrewMounts = union(
       translate(
-        [15, outerWidth / 2, outerHeight / 4],
+        [19, outerWidth / 2, outerHeight / 4],
         rotate([Math.PI / 2, 0, Math.PI], screwMountM2_5({ additionalHeight: 5 })),
       ),
       translate(
-        [-15, outerWidth / 2, outerHeight / 4],
+        [-11, outerWidth / 2, outerHeight / 4],
         rotate([Math.PI / 2, 0, Math.PI], screwMountM2_5({ additionalHeight: 5 })),
       ),
       translate(
-        [15, -(outerWidth / 2), outerHeight / 4],
+        [19, -(outerWidth / 2), outerHeight / 4],
         rotate([Math.PI / 2, 0, 0], screwMountM2_5({ additionalHeight: 5 })),
       ),
       translate(
-        [-15, -(outerWidth / 2), outerHeight / 4],
+        [-11, -(outerWidth / 2), outerHeight / 4],
         rotate([Math.PI / 2, 0, 0], screwMountM2_5({ additionalHeight: 5 })),
       ),
     );
@@ -410,7 +410,7 @@ module.exports.main = () => {
   // return cameraHole();
   // return screwMount1_4();
   // return raspberryZeroMount();
-  return translate([0, 0, 40], lowerBodyWithJoint());
+  // return translate([0, 0, 40], lowerBodyWithJoint());
   // return union(lowerBodyWithJoint(), upperBody());
   // return upperBodyWithCap();
   // return thread2Parts();
