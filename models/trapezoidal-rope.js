@@ -40,7 +40,7 @@ const alpha = Math.PI / 3;
  * Keeps the boolean from leaving a sealed skin over the groove opening.
  * Does not change catalog depth k into the solid.
  */
-const FACE_OVERSHOOT = 0;
+const FACE_OVERSHOOT = 0.01;
 
 // ---------------------------------------------------------------------------
 // Path bend radii (loop corners), derived from the body roundedCuboid.

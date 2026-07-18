@@ -118,6 +118,7 @@ module.exports.main = () => {
   function lowerBodyWithJoint() {
 
     let body = subtract(lowerBody(), trapezoidalRopeTrap());
+    // let body = union(lowerBody(), trapezoidalRopeTrap());
 
     // Gx12 bottom hole.
     const Gx12XOffset = 6;
@@ -268,7 +269,7 @@ module.exports.main = () => {
   function upperBodyWithCap() {
     return union(
       upperBody(),
-      translate([10, 0, 3], cameraCap()),
+      translate([12, 0, 3], cameraCap()),
     );
   }
 
@@ -327,26 +328,26 @@ module.exports.main = () => {
     // In this case we need to add support on the top of the screw mounts.
     // Because we will print that piece upside down.....
 
-    // const capScrewMounts = union(
-    //   translate(
-    //     [15, outerWidth / 2, outerHeight / 4],
-    //     rotate([Math.PI / 2, 0, Math.PI], screwMountM2_5({ additionalHeight: 5 })),
-    //   ),
-    //   translate(
-    //     [-15, outerWidth / 2, outerHeight / 4],
-    //     rotate([Math.PI / 2, 0, Math.PI], screwMountM2_5({ additionalHeight: 5 })),
-    //   ),
-    //   translate(
-    //     [15, -(outerWidth / 2), outerHeight / 4],
-    //     rotate([Math.PI / 2, 0, 0], screwMountM2_5({ additionalHeight: 5 })),
-    //   ),
-    //   translate(
-    //     [-15, -(outerWidth / 2), outerHeight / 4],
-    //     rotate([Math.PI / 2, 0, 0], screwMountM2_5({ additionalHeight: 5 })),
-    //   ),
-    // );
+    const capScrewMounts = union(
+      translate(
+        [17, outerWidth / 2, outerHeight / 4],
+        rotate([Math.PI / 2, 0, Math.PI], screwMountM2_5({ additionalHeight: 5 })),
+      ),
+      translate(
+        [-13, outerWidth / 2, outerHeight / 4],
+        rotate([Math.PI / 2, 0, Math.PI], screwMountM2_5({ additionalHeight: 5 })),
+      ),
+      translate(
+        [17, -(outerWidth / 2), outerHeight / 4],
+        rotate([Math.PI / 2, 0, 0], screwMountM2_5({ additionalHeight: 5 })),
+      ),
+      translate(
+        [-13, -(outerWidth / 2), outerHeight / 4],
+        rotate([Math.PI / 2, 0, 0], screwMountM2_5({ additionalHeight: 5 })),
+      ),
+    );
 
-    return union(body, caseScrewMounts/*, capScrewMounts*/);
+    return union(body, caseScrewMounts, capScrewMounts);
   }
 
   function printable() {
@@ -390,6 +391,17 @@ module.exports.main = () => {
     );
   }
 
+  function printAllChecks() {
+    return union(
+      translate([0, 0, 25], union(lowerBodyWithJoint(), upperBody())),
+      translate([0, -100 , 10], upperBodyWithCap()),
+      translate([0, 70 , 0], thread2Parts()),
+      translate([-150, 0, 25], union(lowerBodyWithJoint(), upperBodyWithCap())),
+      translate([-150, -100 , 10], upperBody()),
+      translate([-150, 100 , 25], lowerBodyWithJoint()),
+    );
+  }
+
   // return lowerBody();
   // return upperBody();
   // return fullBody();
@@ -410,6 +422,7 @@ module.exports.main = () => {
   // return printable();
   // return trapezoidalSegment(10);
   // return translate([0, 0, 50], subtract(lowerBody(), trapezoidalRopeTrap()));
+  return printAllChecks();
   return printable();
 };
 
