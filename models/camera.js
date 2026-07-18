@@ -398,6 +398,17 @@ module.exports.main = () => {
     );
   }
 
+  function printAllChecks() {
+    return union(
+      translate([0, 0, 25], union(lowerBodyWithJoint(), upperBody())),
+      translate([0, -100 , 10], upperBodyWithCap()),
+      translate([0, 70 , 0], thread2Parts()),
+      translate([-150, 0, 25], union(lowerBodyWithJoint(), upperBodyWithCap())),
+      translate([-150, -100 , 10], upperBody()),
+      translate([-150, 100 , 25], lowerBodyWithJoint()),
+    );
+  }
+
   // return lowerBody();
   // return upperBody();
   // return fullBody();
@@ -416,5 +427,6 @@ module.exports.main = () => {
   // return thread2Parts();
   // return trapezoidalSegment(10);
   // return translate([0, 0, 50], subtract(lowerBody(), trapezoidalRopeTrap()));
+  return printAllChecks();
   return printable();
 };
