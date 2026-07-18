@@ -39,7 +39,7 @@ function cameraHole35mm() {
     cameraHole({
       outerRadius: 18,
       innerRadius: 14.3,
-      height: 3,
+      height: 4,
     }),
   );
 }
